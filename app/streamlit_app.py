@@ -11,7 +11,7 @@ st.title("📈 AAPL Stock Price Forecasting using LSTM")
 
 # STEP 1: Data Collection
 st.header("1️⃣ Data Collection")
-df = pd.read_csv('../data/AAPL.csv')
+df = pd.read_csv('/data/AAPL.csv')
 df.columns = df.columns.str.strip()
 df['Close'] = pd.to_numeric(df['Close'], errors='coerce')
 df.dropna(subset=['Close'], inplace=True)
