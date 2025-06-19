@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential
 from keras.layers import LSTM, Dense
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
 
 st.set_page_config(page_title="LSTM Stock Forecasting", layout="wide")
 st.title("📈 AAPL Stock Price Forecasting using LSTM")
@@ -34,6 +37,20 @@ st.header("3️⃣ Statistical Overview")
 st.write("🔹 Mean Close Price:", round(df['Close'].mean(), 2))
 st.write("🔹 Max Close Price:", round(df['Close'].max(), 2))
 st.write("🔹 Min Close Price:", round(df['Close'].min(), 2))
+
+# Simple ARIMA
+st.header("🔢 ARIMA Forecasting")
+model_arima = ARIMA(df['Close'], order=(5,1,0))
+model_arima_fit = model_arima.fit()
+forecast_arima = model_arima_fit.forecast(steps=10)
+st.line_chart(forecast_arima)
+
+# Simple SARIMA (Seasonal ARIMA)
+st.header("🌦 SARIMA Forecasting")
+model_sarima = SARIMAX(df['Close'], order=(1, 1, 1), seasonal_order=(1,1,1,12))
+model_sarima_fit = model_sarima.fit(disp=False)
+forecast_sarima = model_sarima_fit.forecast(steps=10)
+st.line_chart(forecast_sarima)
 
 # STEP 4: LSTM Model
 st.header("4️⃣ LSTM Model Training")
