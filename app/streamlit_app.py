@@ -12,8 +12,8 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX
 st.set_page_config(page_title="LSTM Stock Forecasting", layout="wide")
 st.title("📈 AAPL Stock Price Forecasting using LSTM")
 
-# STEP 1: Data Collection
-st.header("1️⃣ Data Collection")
+
+st.header("Data Collection")
 df = pd.read_csv('data/AAPL.csv')
 df.columns = df.columns.str.strip()
 df['Close'] = pd.to_numeric(df['Close'], errors='coerce')
@@ -22,8 +22,8 @@ df.dropna(subset=['Close'], inplace=True)
 if st.checkbox("Show raw stock data"):
     st.dataframe(df)
 
-# STEP 2: Preprocessing and Visualization
-st.header("2️⃣ Preprocessing & Visualization")
+
+st.header("Preprocessing & Visualization")
 scaler = MinMaxScaler()
 scaled_close = scaler.fit_transform(df[['Close']])
 
@@ -32,28 +32,27 @@ ax2.plot(df['Close'], label='Original Close Price')
 ax2.set_title("Original Close Prices")
 st.pyplot(fig2)
 
-# STEP 3: Statistical Modeling
-st.header("3️⃣ Statistical Overview")
+
+st.header(" Statistical Overview")
 st.write("🔹 Mean Close Price:", round(df['Close'].mean(), 2))
 st.write("🔹 Max Close Price:", round(df['Close'].max(), 2))
 st.write("🔹 Min Close Price:", round(df['Close'].min(), 2))
 
-# Simple ARIMA
-st.header("🔢 ARIMA Forecasting")
+
+st.header(" ARIMA Forecasting")
 model_arima = ARIMA(df['Close'], order=(5,1,0))
 model_arima_fit = model_arima.fit()
 forecast_arima = model_arima_fit.forecast(steps=10)
 st.line_chart(forecast_arima)
 
-# Simple SARIMA (Seasonal ARIMA)
-st.header("🌦 SARIMA Forecasting")
+
+st.header("SARIMA Forecasting")
 model_sarima = SARIMAX(df['Close'], order=(1, 1, 1), seasonal_order=(1,1,1,12))
 model_sarima_fit = model_sarima.fit(disp=False)
 forecast_sarima = model_sarima_fit.forecast(steps=10)
 st.line_chart(forecast_sarima)
 
-# STEP 4: LSTM Model
-st.header("4️⃣ LSTM Model Training")
+st.header(" LSTM Model Training")
 X, y = [], []
 for i in range(3, len(scaled_close)):
     X.append(scaled_close[i-3:i, 0])
@@ -74,8 +73,7 @@ if st.button("Train LSTM Model"):
         predicted_prices = scaler.inverse_transform(predicted)
         actual = scaler.inverse_transform(y.reshape(-1, 1))
 
-        # STEP 5: Evaluation & Visualization
-        st.header("5️⃣ Model Evaluation & Visualization")
+        st.header(" Model Evaluation & Visualization")
         fig3, ax3 = plt.subplots()
         ax3.plot(actual, label='Actual')
         ax3.plot(predicted_prices, label='Predicted')
